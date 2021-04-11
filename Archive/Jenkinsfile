@@ -1,0 +1,79 @@
+def runTestsWithDevice(languageProperties,deviceName) {
+    try{
+
+        def device = "\"${deviceName}\""
+        withCredentials([[$class:'UsernamePasswordMultiBinding',credentialsId:"perfectoJenkinsUser",usernameVariable:'userName',passwordVariable:'password']]) {
+            sh """${M3}/bin/mvn test -Dspring.profiles.active=android,settings,${languageProperties} -Ddevice.name=${device}  -Duser.name=${userName} -Duser.password=${password}"""
+        }
+        publishHTML(target:[allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'target/cucumber', reportFiles: 'index.html', reportName: "Perfecto Report ${device}"])
+    }catch (e){
+        publishHTML(target:[allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'target/cucumber', reportFiles: 'index.html', reportName: "Perfecto Report ${device}"])
+        throw e
+    }
+
+
+}
+
+
+pipeline {
+    agent {label 'DEVCLD-M3'}
+    parameters{
+        string(name: 'ListOfDevices', defaultValue: '', description: 'Enter the list of devices to run', )
+        string(name: 'LangPropertiesForDevice', defaultValue: '', description: 'Enter the language properties for the devices.', )
+    }
+    stages {
+        stage ('CheckOut') {
+            steps {
+                git branch: 'develop', changelog: false, credentialsId: 'sonar-publisher', poll: false, url: 'https://globalrepository.mclocal.int/stash/scm/pwr/pwr-automation-test.git'
+            }
+        }
+        stage ('Android Functional Tests') {
+            parallel {
+                stage('First Device') {
+                    when {
+                        expression {
+                            return "${ListOfDevices}".split(',').size() >= 1 || "${ListOfDevices}".split(',').size() < 1
+                        }
+                    }
+                    steps {
+                        script {
+                            runTestsWithDevice("${LangPropertiesForDevice}".tokenize(',')[0],"${ListOfDevices}".tokenize(',')[0])
+                        }
+
+                    }
+                }
+                stage('Second Device') {
+                    when {
+                        expression {
+                            return "${ListOfDevices}".split(',').size() >= 2
+                        }
+                    }
+                    steps {
+                        script {
+                            runTestsWithDevice("${LangPropertiesForDevice}".tokenize(',')[1],"${ListOfDevices}".tokenize(',')[1])
+                        }
+
+                    }
+                }
+                stage('Third Device') {
+                    when {
+                        expression {
+                            return "${ListOfDevices}".split(',').size() >= 3
+                        }
+                    }
+                    steps {
+                        script {
+                            runTestsWithDevice("${LangPropertiesForDevice}".tokenize(',')[2],"${ListOfDevices}".tokenize(',')[2])
+                        }
+                    }
+                }
+            }
+        }
+//        stage ('IOS Functional Tests') {
+//            steps {
+//                runTestsWithDevice('ios','en_US')
+//            }
+//        }
+    }
+
+}
