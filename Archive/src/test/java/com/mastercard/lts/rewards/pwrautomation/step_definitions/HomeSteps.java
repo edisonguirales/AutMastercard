@@ -16,11 +16,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,10 +29,13 @@ public class HomeSteps extends AbstractSteps {
     private static ThreadLocal<Boolean> toggleValue = ThreadLocal.withInitial(() -> null);
 
     private HomePage homePage;
+    private ConciergePage conciergePage;
+    private FlybitsNotificationsPage flybitsNotificationsPage;
     private AddNewCardPage addNewCardPage;
     private FAQPage faqPage;
     private CalculatorPage calculatorPage;
     private SettingsPage settingsPage;
+    private FlybitsOptInPostRegPage flybitsOptInPostRegPage;
     private ActivityPage activityPage;
     private PromotionsPage promotionsPage;
 
@@ -49,6 +49,37 @@ public class HomeSteps extends AbstractSteps {
     @When("^the client sees home page")
     public void the_client_sees_home_page() {
         homePage= MobilePageFactory.buildInstance(driver, HomePage.class, deviceType);
+    }
+
+    @When("^the client sees concierge page")
+    public void the_client_sees_concierge_page() {
+        conciergePage= MobilePageFactory.buildInstance(driver, ConciergePage.class, deviceType);
+    }
+
+    @When("^the client sees notifications page")
+    public void the_client_sees_notifications_page() {
+        flybitsNotificationsPage= MobilePageFactory.buildInstance(driver,FlybitsNotificationsPage.class, deviceType);
+    }
+
+    @When("^the client clicks on the notification icon")
+    public void the_client_clicks_notifications_icon() {
+        conciergePage.clickNotificationsIcon();
+    }
+
+    @When("^the client verifies the no notifications text (.+)$")
+    public void the_client_verifies_no_notification_text(String noNotifText) {
+        flybitsNotificationsPage.verifyEmptyNotificationMessage(getValue(noNotifText));
+    }
+
+
+    @When("^the client clicks back button in concierge page")
+    public void the_client_clicks_back_button_in_concierge_page() {
+        conciergePage.clickBackButton();
+    }
+
+    @When("^the client clicks back button in notifications page")
+    public void the_client_clicks_back_button_in_notifications_page() {
+        flybitsNotificationsPage.clickBackButton();
     }
 
     @When("^the client should click on activate pay with rewards button")
@@ -131,18 +162,10 @@ public class HomeSteps extends AbstractSteps {
         Assert.assertTrue("Calculator button should be visible on home page",homePage.calculatorButton.isDisplayed());
     }
     @Then("^tabs exist on home page")
-    public void tabs_exist_on_home_page(List<String> tabNames) {
-        String promotions = new String("الإعدادات ".getBytes(), StandardCharsets.UTF_8);
-        String activity = new String("نشاط".getBytes(), StandardCharsets.UTF_8);
-        String settings = new String("الترقيات".getBytes(), StandardCharsets.UTF_8);
-        List<String> arabicStrings = new ArrayList<>();
-        arabicStrings.add(promotions);
-        arabicStrings.add(activity);
-        arabicStrings.add(settings);
-        for (String tabName:arabicStrings) {
+    public void tabs_exist_on_home_page(List<String> tabNames){
+        for (String tabName:tabNames) {
             String name = getValue(tabName);
-//            String lang = System.getProperty("session.id");
-            Assert.assertTrue("Tab name "+name+" should be displayed",homePage.tabInScrollViewContains(tabName));
+            Assert.assertTrue("Tab name "+name+" should be displayed",homePage.tabInScrollViewContains(name));
         }
     }
 
@@ -165,26 +188,12 @@ public class HomeSteps extends AbstractSteps {
     @Then("^validate slide in menu contains items")
     public void slide_in_menu_contains_items(List<String> items){
         homePage.clickBurgerMenu();
-        String home = new String("الصفحة الرئيسية".getBytes(), StandardCharsets.UTF_8);
-        String authSettings = new String("إعدادات المصادقة".getBytes(), StandardCharsets.UTF_8);
-        String tc = new String("الشروط والقواعد".getBytes(), StandardCharsets.UTF_8);
-        String tutorial = new String("الدورة التعليمية".getBytes(), StandardCharsets.UTF_8);
-        String faq = new String("التعليمات".getBytes(), StandardCharsets.UTF_8);
-        String signOut = new String("خروج".getBytes(), StandardCharsets.UTF_8);
-        List<String> arabicStrings = new ArrayList<>();
-        arabicStrings.add(home);
-        arabicStrings.add(authSettings);
-        arabicStrings.add(tc);
-        arabicStrings.add(tutorial);
-        arabicStrings.add(faq);
-        arabicStrings.add(signOut);
-        for (String item:arabicStrings) {
-//            String name = getValue(item);
-            Assert.assertTrue("Menu item should be displayed",homePage.slideInMenuContains(item));
+        for (String item:items) {
+            String name = getValue(item);
+            Assert.assertTrue("Menu item "+name+" should be displayed",homePage.slideInMenuContains(name));
         }
         //return home page
-        homePage.selectSlideInMenuItem("الصفحة الرئيسية");
-//        homePage.selectSlideInMenuItem(getValue("home.menu.home"));
+        homePage.selectSlideInMenuItem(getValue("home.menu.home"));
     }
 
     @Then("^the user clicks on the (.+) button in the side menu")
@@ -196,35 +205,8 @@ public class HomeSteps extends AbstractSteps {
 
     @When("^the client navigates to page(.+)$")
     public void the_client_navigates_to_page(String pageName){
-        String menuName = getValue(pageName);
-        String arabicMenuName;
-        assert menuName != null;
-        switch (menuName)
-        {
-            case "Home":
-                arabicMenuName = "الصفحة الرئيسية";
-                break;
-            case "Authentication Settings":
-                arabicMenuName = "إعدادات المصادقة";
-                break;
-            case "Terms & Conditions":
-                arabicMenuName = "الشروط والقواعد";
-                break;
-            case "Tutorial":
-                arabicMenuName = "الدورة التعليمية";
-                break;
-            case "FAQ":
-                arabicMenuName = "التعليمات";
-                break;
-            case "Sign Out":
-                arabicMenuName = "خروج";
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + menuName);
-        }
-
         homePage= MobilePageFactory.buildInstance(driver, HomePage.class, deviceType);
-        homePage.clickSlideInMenuWithName(arabicMenuName);
+        homePage.clickSlideInMenuWithName(getValue(pageName));
     }
 
     @Then("^the client selects three segment control (.+)$")
@@ -239,27 +221,7 @@ public class HomeSteps extends AbstractSteps {
 
     @Then("^the client selects tab control(.+)$")
     public void the_client_selects_tab_control(String controlName) {
-        String tabName = getValue(controlName);
-        String  arabicTabName;
-        assert tabName != null;
-        switch (tabName)
-       {
-           case "PROMOTIONS":
-               arabicTabName = "الترقيات NEW MC EN";
-               break;
-
-           case "ACTIVITY":
-                arabicTabName = "نشاط";
-                break;
-
-           case "SETTINGS":
-                arabicTabName = "الإعدادات NEW MC EN";
-               break;
-           default:
-               throw new IllegalStateException("Unexpected value: " + tabName);
-       }
-//        homePage.selectTabInScrollView(getValue(controlName));
-        homePage.selectTabInScrollView(arabicTabName);
+        homePage.selectTabInScrollView(getValue(controlName));
     }
 
     @Then("^the client verifies the activity list")
@@ -347,11 +309,9 @@ public class HomeSteps extends AbstractSteps {
     @Then("^the client returns home page from (.+)$")
     public void the_client_returns_home_page_from(String page) {
         if (page.equalsIgnoreCase("AddNewCardPage")) {
-//            addNewCardPage.clickSlideInMenuWithName(getValue("home.menu.home"));
-            addNewCardPage.clickSlideInMenuWithName("الصفحة الرئيسية");
+            addNewCardPage.clickSlideInMenuWithName(getValue("home.menu.home"));
         }else if(page.equalsIgnoreCase("FAQPage")){
-//        	faqPage.clickSlideInMenuWithName(getValue("home.menu.home"));
-        	faqPage.clickSlideInMenuWithName("الصفحة الرئيسية");
+        	faqPage.clickSlideInMenuWithName(getValue("home.menu.home"));
         }else if(page.equalsIgnoreCase("SettingsPage")){
             settingsPage.swipeDown();
             settingsPage.swipeDown();
@@ -359,8 +319,7 @@ public class HomeSteps extends AbstractSteps {
             ActivityPage activityPage = MobilePageFactory.buildInstance(driver,ActivityPage.class,deviceType);
             activityPage.swipeDown();
         }else{
-//            calculatorPage.clickSlideInMenuWithName(getValue("home.menu.home"));
-            calculatorPage.clickSlideInMenuWithName(getValue("الصفحة الرئيسية"));
+            calculatorPage.clickSlideInMenuWithName(getValue("home.menu.home"));
         }
     }
 
@@ -479,7 +438,7 @@ public class HomeSteps extends AbstractSteps {
     }
 
     private void assertPromotionalValue(String promotionalPointsValue) {
-        Assert.assertTrue(promotionalPointsValue.equalsIgnoreCase("---"));
+        Assert.assertFalse(promotionalPointsValue.equalsIgnoreCase("---"));
     }
 
     @Then("^the client enters points (.+) manually and the point value anywhere should change to the cash value based on the program's conversion rate(.+)$")
@@ -586,6 +545,16 @@ public class HomeSteps extends AbstractSteps {
         //Assert.assertTrue("Rewards setting not disappeared",settingsPage.rewardsSettingsSectionsExist());
     }
 
+    @Then("^the client sees flybits Optin post registration page")
+    public void the_client_sees_flybits_optin_pr_page(){
+        flybitsOptInPostRegPage=MobilePageFactory.buildInstance(driver,FlybitsOptInPostRegPage.class,deviceType);
+    }
+
+    @Then("^the client clicks selects the checkbox and click continue button")
+    public void the_client_sees_click_continue_button(){
+        flybitsOptInPostRegPage.clickContinueForFlybitsOptIn();
+    }
+
     @Then("^validate the settings page has the sections(.+)")
     public void verify_sections_exists_on_settings_page(String sectionName) {
         String name = getValue(sectionName);
@@ -685,9 +654,7 @@ public class HomeSteps extends AbstractSteps {
 
     @Then("^the client selects activity (.+)$")
     public void the_client_clicks_continue_button(String activityToSelect) {
-
-//        activityPage.scrollToActivityToSelect(activityToSelect.trim());
-        activityPage.scrollToActivityToSelect("المشتريات المؤهلة");
+        activityPage.scrollToActivityToSelect(activityToSelect.trim());
     }
 
     @Then("^the client clicks on the transaction points")
@@ -719,6 +686,10 @@ public class HomeSteps extends AbstractSteps {
             settingsPage.clickSwitch(settingsPage.rewardsReminderSwitch);
         } else if (toggleSwitch.trim().equalsIgnoreCase("Ineligible Purchases")) {
             settingsPage.clickSwitch(settingsPage.ineligiblePurchaseSwitch);
+        } else if (toggleSwitch.trim().equalsIgnoreCase("Personalized Content")) {
+            settingsPage.swipeDownToSeePersonalisedSW();
+            settingsPage.swipeDownToSeePersonalisedSW();
+            settingsPage.clickSwitch(settingsPage.personalisedSW);
         } else {
             settingsPage.clickSwitch(settingsPage.emailNotificationSwitch);
         }

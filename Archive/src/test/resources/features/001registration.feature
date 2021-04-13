@@ -13,11 +13,11 @@ Feature: client go through registration
     Then the client clicks continue button
     And the client sees PIN page
 
-#  @regression
-#  Scenario: client sees help hint for first time and also enters sequential PIN code
-#    When the client sees PIN page
-#    Then validate the pin number help hint registration.create.four.digit.passcode
-#    And the client sees PIN page
+  @regression
+  Scenario: client sees help hint for first time and also enters sequential PIN code
+    When the client sees PIN page
+    Then validate the pin number help hint registration.create.four.digit.passcode
+    And the client sees PIN page
 
   @regression
   Scenario Outline: client enters the sequential pin and validate the error message
@@ -68,15 +68,15 @@ Feature: client go through registration
     And the client clicks security question dropdown
     And the client selects security question with option registration.security.question.ssn
     And the client enters security question answer as 1234
-#
-#
+
+
   @regression
   Scenario: client goes to the Terms page, click Decline button and validate OK and Cancel button are enabled
     When the client goes to Terms page
     And the client selects acknowledge checkbox on Terms page
     Then the client clicks decline button on Terms page
     And validate OK and Cancel button is enabled
-#
+
   @regression
   Scenario: client goes to the Terms page, clicks Decline and Cancel button
     When the client goes to Terms page
@@ -84,14 +84,14 @@ Feature: client go through registration
     And the client clicks decline button on Terms page
     And the client clicks Cancel button on Terms page
     Then the client goes to Terms page
-#
+
   @regression
   Scenario: client go to the Terms page, clicks Accept, and validate OK and Cancel button are enabled
     When the client goes to Terms page
     And the client selects acknowledge checkbox on Terms page
     And the client clicks accept button on Terms page
     And validate OK and Cancel button is enabled
-#
+
   @regression
   Scenario: client goes to the Terms page, clicks accept and Cancel button
     When the client goes to Terms page
@@ -99,7 +99,7 @@ Feature: client go through registration
     And the client clicks accept button on Terms page
     And the client clicks Cancel button on Terms page
     Then the client goes to Terms page
-#
+
   @regression
   Scenario: client go to the Terms page, clicks Accept, Ok button and sees the data privacy page
     When the client goes to Terms page
@@ -108,7 +108,7 @@ Feature: client go through registration
     Then validate the agreement alert message registration.terms.conditions
     And the client clicks OK button on Terms page
     And the client sees data protection policy page
-#
+
   @regression
   Scenario: client go to the Data Protection Policy page page, clicks Save Preferences and sees the tutorial page
     When the client sees data protection policy page

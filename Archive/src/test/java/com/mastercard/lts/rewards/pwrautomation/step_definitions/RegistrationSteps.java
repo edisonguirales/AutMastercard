@@ -377,6 +377,7 @@ public class RegistrationSteps {
     @Then("^the client clicks skip button in Location Services page")
     public void the_client_clicks_continue_button_on_location_services_page() {
         localtionServicesPage.clickContinueForLocationServices();
+        waitExecutionFor(5);
     }
 
     void waitExecutionFor(long noOFSeconds){

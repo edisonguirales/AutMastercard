@@ -6,6 +6,8 @@ Feature: client go through home page
     And the client swipes down from Activity Page
     Then the client sees home page
 
+
+
   @regression
   Scenario: client goes through home page and validate promotions,settings and activity tabs. Also validates Total Points,Last four digits of card number,Calculator Icon
     When the client sees home page
@@ -31,7 +33,7 @@ Feature: client go through home page
     When the client sees home page
     And the client clicks the calculator button on the home page
     Then user sees the calculator page
-#    And the client should see help popup with message containing home.calculator.see.points.msg and dismiss by clicking icon
+    And the client should see help popup with message containing home.calculator.see.points.msg and dismiss by clicking icon
     And the client validates offer points
 #    And client moves the slider control to left to get min or max value
 #    And the client will get slider minimum amount
@@ -82,7 +84,7 @@ Feature: client go through home page
     And the client swipes down from Activity Page
     Then the client sees home page
 
-  #---------------------------------------------------Promotions Page----------------------------------------------------------------
+#  ---------------------------------------------------Promotions Page----------------------------------------------------------------
 
 
   @regression
@@ -109,6 +111,28 @@ Feature: client go through home page
   @regression @postRegistration
   Scenario: client goes through settings page and verifies Reward Settings, Communication Preferences, Email Settings
     When the client sees home page
+    And the client selects tab control home.tab.settings
+    And the client sees settings page
+
+  @regression
+  Scenario: client goes through settings page and validates with invalid emails
+    When the client sees settings page
+    And  the user updates the Personalized Content switch
+    Then the client returns home page from SettingsPage
+    And  the client sees home page
+    And  the client selects tab control home.tab.promotions
+    And the client sees flybits Optin post registration page
+    And the client clicks selects the checkbox and click continue button
+    And the client sees concierge page
+    And the client clicks on the notification icon
+    And the client sees notifications page
+    And the client verifies the no notifications text promotions.concierge.notifications
+    And the client clicks back button in notifications page
+    And the client sees concierge page
+    And the client clicks back button in concierge page
+    And the client sees activity page
+    And the client swipes down from Activity Page
+    Then the client sees home page
     And the client selects tab control home.tab.settings
     And the client sees settings page
 
@@ -155,15 +179,15 @@ Feature: client go through home page
       |Rewards Reminder|
       |Ineligible Purchases|
       |EMAIL PREFERENCES|
-#
-##  @regression
-##  Scenario Outline: client goes through settings page and verify the help hints
-##    When the client sees settings page
-##    And the client clicks hint icon <helpHintIcon> and sees message <helpHintMessage>
-##    Examples:
-##      | helpHintIcon                   | helpHintMessage              |
-##      | home.communication.preferences | home.decision.pwr            |
-##      | home.email.preferences         | home.email.notifications.opt |
+
+  @regression
+  Scenario Outline: client goes through settings page and verify the help hints
+    When the client sees settings page
+    And the client clicks hint icon <helpHintIcon> and sees message <helpHintMessage>
+    Examples:
+      | helpHintIcon                   | helpHintMessage              |
+      | home.communication.preferences | home.decision.pwr            |
+      | home.email.preferences         | home.email.notifications.opt |
 
   @regression
   Scenario: client click on the navigation menu and goes to FAQ page
@@ -255,3 +279,7 @@ Feature: client go through home page
     Examples:
      | TransactionAmount | SettlementAmount | BillingAmount | cardAcceptor | ActivityName       | accountNumber       | programID | serviceID | AcquiringInsIDCode | CardAcceptorIDCode | SwitchValue |
      | 000000000100      | 000000000100     | 000000000100  | MobileAutomationTest      | Eligible Purchases | 5204740009900006000 | 10442     | 1638      | 3583               | 889444000485847    | on          |
+
+  @smoke @regression
+  Scenario: client close the app
+    When the client closes the app

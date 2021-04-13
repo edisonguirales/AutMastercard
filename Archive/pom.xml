@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+            http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.mastercard.lts.rewards</groupId>
@@ -14,7 +16,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.0.1.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
 	<properties>
@@ -31,20 +33,22 @@
 		<threetenbp-version>1.3.8</threetenbp-version>
 		<webdrivermanager.version>2.2.0</webdrivermanager.version>
 		<applitools.version>3.29</applitools.version>
+		<testngXmlFile>testng_perfecto.xml</testngXmlFile>
 
 		<testng.version>6.14.2</testng.version>
 
 		<ashot.version>1.5.4</ashot.version>
 
 		<logback.version>1.1.2</logback.version>
-		<!--<slf4j.version>1.7.7</slf4j.version>-->
+		<slf4j.version>1.7.7</slf4j.version>
 
 		<qa.tools.version>1.6</qa.tools.version>
 		<allure.testng.version>2.6.0</allure.testng.version>
 
 		<opencsv.version>3.9</opencsv.version>
 		<rest-assured.version>3.0.2</rest-assured.version>
-		<reportium.version>1.0.0</reportium.version>
+		<reportium.version>2.3.1</reportium.version>
+		<reportium-sdk.version>1.1.9</reportium-sdk.version>
 
 		<joda.time.version>2.9.4</joda.time.version>
 		<json-simple.version>1.1.1</json-simple.version>
@@ -57,15 +61,29 @@
 		<embeddables>**/AllStories.java</embeddables>
 		<cucumber.java.version>5.6.0</cucumber.java.version>
 		<commons-io.version>1.3.2</commons-io.version>
+		<tomcat.version>7.0.52</tomcat.version>
 	</properties>
 
 	<dependencies>
-		<!--TODO: Update reportium version to 1.2.3-->
+		<!--TODO: Update reportium version to 1.2.3 -->
+
+		<!-- Reporting SDK -->
+
+
+		<!-- Reporting SDK -->
 		<dependency>
 			<groupId>com.perfecto.reporting-sdk</groupId>
 			<artifactId>reportium-java</artifactId>
-			<version>${reportium.version}</version>
+			<version>${reportium-sdk.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>com.perfecto.reporting-sdk</groupId>
+			<artifactId>reportium-allure-integration</artifactId>
+			<version>${reportium-sdk.version}</version>
+		</dependency>
+
+
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
@@ -114,10 +132,21 @@
 			</exclusions>
 
 		</dependency>
+
+		<dependency>
+			<groupId>com.perfecto</groupId>
+			<artifactId>reportium-java</artifactId>
+			<version>2.3.3</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/reportium-java-2.3.3.jar</systemPath>
+		</dependency>
+
 		<dependency>
 			<groupId>com.mastercard.quality.engineering</groupId>
 			<artifactId>mtaf-ui-tools</artifactId>
 			<version>18.4.2.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/mc/mtaf-page-bindings-18.4.2.0.jar</systemPath>
 			<exclusions>
 				<exclusion>
 					<groupId>org.mockito</groupId>
@@ -170,14 +199,11 @@
 		<dependency>
 			<groupId>com.jayway.restassured</groupId>
 			<artifactId>rest-assured</artifactId>
-			 <version>2.9.0</version>
-			 <scope>test</scope>
+			<version>2.9.0</version>
+			<scope>test</scope>
 		</dependency>
-		<!--<dependency>
-			<groupId>org.seleniumhq.selenium</groupId>
-			<artifactId>selenium-remote-driver</artifactId>
-			<version>3.0.1</version>
-		</dependency>-->
+		<!--<dependency> <groupId>org.seleniumhq.selenium</groupId> <artifactId>selenium-remote-driver</artifactId> 
+			<version>3.0.1</version> </dependency> -->
 		<dependency>
 			<groupId>org.glassfish</groupId>
 			<artifactId>javax.json</artifactId>
@@ -208,26 +234,14 @@
 			<version>2.9.4</version>
 		</dependency>
 
-		<!-- Need to override managed version to take advantage of Mockito 2's
+		<!-- Need to override managed version to take advantage of Mockito 2's 
 			Java 8 facilities -->
-		<!--<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-			<version>2.13.0</version>
-			<scope>test</scope>
-		</dependency>-->
-		<!--<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>1.9.5</version>
-			<scope>test</scope>
-		</dependency>-->
-		<!--<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-api-mockito2</artifactId>
-			<version>1.7.0</version>
-			<scope>test</scope>
-		</dependency>-->
+		<!--<dependency> <groupId>org.mockito</groupId> <artifactId>mockito-core</artifactId> 
+			<version>2.13.0</version> <scope>test</scope> </dependency> -->
+		<!--<dependency> <groupId>org.mockito</groupId> <artifactId>mockito-all</artifactId> 
+			<version>1.9.5</version> <scope>test</scope> </dependency> -->
+		<!--<dependency> <groupId>org.powermock</groupId> <artifactId>powermock-api-mockito2</artifactId> 
+			<version>1.7.0</version> <scope>test</scope> </dependency> -->
 
 		<dependency>
 			<groupId>org.hamcrest</groupId>
@@ -235,11 +249,15 @@
 			<scope>test</scope>
 			<version>1.3</version>
 		</dependency>
-		<!--<dependency>-->
-			<!--<groupId>org.springframework.boot</groupId>-->
-			<!--<artifactId>spring-boot-autoconfigure</artifactId>-->
-			<!--<version>2.0.1.RELEASE</version>-->
-		<!--</dependency>-->
+		<!--<dependency> -->
+		<!--<groupId>org.springframework.boot</groupId> -->
+		<!--<artifactId>spring-boot-autoconfigure</artifactId> -->
+		<!--<version>2.0.1.RELEASE</version> -->
+		<!--</dependency> -->
+		<dependency>
+	        <groupId>org.springframework.boot</groupId>
+	        <artifactId>spring-boot-starter-tomcat</artifactId>
+	</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -278,6 +296,12 @@
 			<version>${cucumber.java.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/commons-lang/commons-lang -->
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>1.0</version>
+		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-io -->
 		<dependency>
@@ -285,6 +309,7 @@
 			<artifactId>commons-io</artifactId>
 			<version>${commons-io.version}</version>
 		</dependency>
+
 		<dependency>
 			<groupId>net.sourceforge.tess4j</groupId>
 			<artifactId>tess4j</artifactId>
@@ -330,17 +355,17 @@
 			<artifactId>gson</artifactId>
 			<version>${gson-version}</version>
 		</dependency>
-		<!--<dependency>-->
-			<!--<groupId>org.springframework.boot</groupId>-->
-			<!--<artifactId>spring-boot</artifactId>-->
-			<!--<version>1.3.5.RELEASE</version>-->
-			<!--<scope>test</scope>-->
-		<!--</dependency>-->
-		<!--<dependency>-->
-			<!--<groupId>org.springframework.boot</groupId>-->
-			<!--<artifactId>spring-boot-starter-web</artifactId>-->
-			<!--<version>2.0.1.RELEASE</version>-->
-		<!--</dependency>-->
+		<!--<dependency> -->
+		<!--<groupId>org.springframework.boot</groupId> -->
+		<!--<artifactId>spring-boot</artifactId> -->
+		<!--<version>1.3.5.RELEASE</version> -->
+		<!--<scope>test</scope> -->
+		<!--</dependency> -->
+		<!--<dependency> -->
+		<!--<groupId>org.springframework.boot</groupId> -->
+		<!--<artifactId>spring-boot-starter-web</artifactId> -->
+		<!--<version>2.0.1.RELEASE</version> -->
+		<!--</dependency> -->
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -354,16 +379,49 @@
 			<version>1.5.6.RELEASE</version>
 		</dependency>
 		<dependency>
-			<groupId>com.hynnet</groupId>
-			<artifactId>oracle-driver-ojdbc6</artifactId>
-			<version>12.1.0.1</version>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc6</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/ojdbc6/ojdbc6.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.16.20</version>
+			<version>1.18.2</version>
 		</dependency>
+ <dependency>
+       <groupId>javax.servlet</groupId>
+       <artifactId>javax.servlet-api</artifactId>
+       <!-- <version>2.5.0</version> -->
+    </dependency>
+
+		<!-- <dependency> <groupId>com.perfecto.reporting-sdk</groupId> <artifactId>reportium-java</artifactId> 
+			<version>${reportium-sdk.version}</version> </dependency> <dependency> <groupId>com.perfecto.reporting-sdk</groupId> 
+			<artifactId>reportium-testng</artifactId> <version>${reportium-sdk.version}</version> 
+			</dependency> <dependency> <groupId>com.perfectomobile</groupId> <artifactId>pm-webdriver</artifactId> 
+			<version>RELEASE</version> </dependency> <dependency> <groupId>com.perfectomobile</groupId> 
+			<artifactId>http-client</artifactId> <version>RELEASE</version> </dependency> -->
+
+
+
+
+
 	</dependencies>
+
+
+
+	<repositories>
+		<repository>
+			<id>perfectomobile</id>
+			<name>Perfecto mobile</name>
+			<url>https://repo1.perfectomobile.com/public/repositories/maven</url>
+		</repository>
+
+	</repositories>
+
+
+
 	<build>
 		<plugins>
 			<plugin>
